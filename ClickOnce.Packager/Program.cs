@@ -99,9 +99,16 @@ namespace ClickOnce.Packager
                     {
                         foreach (var file in contentDirectory.GetFiles())
                         {
+                            var fileName = file.Name;
+
+                            if (file.Extension == ".dll" || file.Extension == ".exe")
+                            {
+                                fileName = fileName + ".deploy";
+                            }
+
                             manifest.files.Add(new ManifestFile
                             {
-                                path = manifest.version + "/Content/" + file.Name,
+                                path = manifest.version + "/Content/" + fileName,
                                 name = "Content/" + file.Name,
                                 assemblyName = null,
                                 version = null,
@@ -113,7 +120,7 @@ namespace ClickOnce.Packager
 
                             Console.WriteLine("Processing Content/" + file.Name + "...");
 
-                            var entry = zip.CreateEntry(manifest.version + "/Content/" + file.Name);
+                            var entry = zip.CreateEntry(manifest.version + "/Content/" + fileName);
                             using (var target = entry.Open())
                             {
                                 using (var reader = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
