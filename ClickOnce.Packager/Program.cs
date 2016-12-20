@@ -92,27 +92,30 @@ namespace ClickOnce.Packager
                         }
                     }
 
-                    foreach (var file in contentDirectory.GetFiles())
+                    if (contentDirectory != null)
                     {
-                        manifest.files.Add(new ManifestFile
+                        foreach (var file in contentDirectory.GetFiles())
                         {
-                            path = manifest.version + "/Content/" + file.Name,
-                            name = "Content/" + file.Name,
-                            version = null,
-                            publicKeyToken = null,
-                            digestMethod = "sha256",
-                            digestValue = GetSha256DigestValueForFile(file),
-                            size = file.Length
-                        });
-
-                        Console.WriteLine("Processing Content/" + file.Name + "...");
-
-                        var entry = zip.CreateEntry(manifest.version + "/Content/" + file.Name);
-                        using (var target = entry.Open())
-                        {
-                            using (var reader = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
+                            manifest.files.Add(new ManifestFile
                             {
-                                reader.CopyTo(target);
+                                path = manifest.version + "/Content/" + file.Name,
+                                name = "Content/" + file.Name,
+                                version = null,
+                                publicKeyToken = null,
+                                digestMethod = "sha256",
+                                digestValue = GetSha256DigestValueForFile(file),
+                                size = file.Length
+                            });
+
+                            Console.WriteLine("Processing Content/" + file.Name + "...");
+
+                            var entry = zip.CreateEntry(manifest.version + "/Content/" + file.Name);
+                            using (var target = entry.Open())
+                            {
+                                using (var reader = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
+                                {
+                                    reader.CopyTo(target);
+                                }
                             }
                         }
                     }
