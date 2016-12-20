@@ -4,6 +4,6 @@ if host-in Windows,MacOS
   generate
   build
 
-  execute ClickOnce.Packager
+  execute ClickOnce.Packager $PLATFORM
 endif
 

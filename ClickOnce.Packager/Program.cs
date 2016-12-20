@@ -15,6 +15,8 @@ namespace ClickOnce.Packager
     {
         public static void Main(string[] args)
         {
+            var platform = args.Length > 0 ? args[0] : "Windows";
+
             var directory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory;
             var contentDirectory = directory.GetDirectories().FirstOrDefault(x => x.Name == "Content");
 
@@ -22,7 +24,7 @@ namespace ClickOnce.Packager
 
             Environment.CurrentDirectory = directory.FullName;
 
-            var bundlePath = Path.Combine(directory.FullName, "../../../../../Bundle.zip");
+            var bundlePath = Path.Combine(directory.FullName, "../../../../../Bundle." + platform + ".zip");
 
             if (File.Exists(bundlePath))
             {

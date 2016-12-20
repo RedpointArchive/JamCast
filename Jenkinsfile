@@ -5,7 +5,7 @@ stage("Windows") {
     checkout poll: false, changelog: false, scm: scm
     bat ("Protobuild.exe --upgrade-all")
     bat ('Protobuild.exe --automated-build')
-    archiveArtifacts artifacts: 'Bundle.zip', fingerprint: true
+    archiveArtifacts artifacts: 'Bundle.Windows.zip', fingerprint: true
   }
 }
 
@@ -14,6 +14,6 @@ stage("Mac") {
     checkout poll: false, changelog: false, scm: scm
     sh ("/usr/local/bin/mono Protobuild.exe --upgrade-all")
     sh ("/usr/local/bin/mono Protobuild.exe --automated-build")
-    archiveArtifacts artifacts: 'Bundle.zip', fingerprint: true
+    archiveArtifacts artifacts: 'Bundle.MacOS.zip', fingerprint: true
   }
 }
