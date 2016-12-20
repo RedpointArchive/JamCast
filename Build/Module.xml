@@ -2,9 +2,10 @@
 <Module>
   <Name>Jamcast2</Name>
   <DefaultAction>resync</DefaultAction>
+  <DisableSynchronisation>false</DisableSynchronisation>
   <GenerateNuGetRepositories>true</GenerateNuGetRepositories>
   <Packages>
     <Package Repository="https://api.nuget.org/v3/index.json" Package="ffmpeg.nuget" Version="master" />
-    <Package Repository="https://api.nuget.org/v3/index.json" Package="Newtonsoft.Json" Version="9.0.1" />
+    <Package Uri="https-nuget://www.nuget.org/api/v2/|Newtonsoft.Json" Folder="Newtonsoft.Json" GitRef="9.0.1" />
   </Packages>
 </Module>
