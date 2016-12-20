@@ -50,6 +50,7 @@ namespace ClickOnce.Packager
                     {
                         string version = null;
                         string publicKeyToken = null;
+                        string assemblyName = null;
 
                         if (!(file.Extension == ".dll" || file.Extension == ".exe"))
                         {
@@ -66,6 +67,7 @@ namespace ClickOnce.Packager
                         try
                         {
                             var asm = Assembly.LoadFile(file.FullName);
+                            assemblyName = asm.GetName().Name;
                             version = asm.GetName().Version.ToString();
                             publicKeyToken = BitConverter.ToString(asm.GetName().GetPublicKeyToken()).ToUpperInvariant().Replace("-", "");
                         }
@@ -75,6 +77,7 @@ namespace ClickOnce.Packager
                         {
                             path = manifest.version + "/" + file.Name + ".deploy",
                             name = file.Name,
+                            assemblyName = assemblyName,
                             version = version,
                             publicKeyToken = string.IsNullOrWhiteSpace(publicKeyToken) ? null : publicKeyToken,
                             digestMethod = "sha256",
@@ -100,6 +103,7 @@ namespace ClickOnce.Packager
                             {
                                 path = manifest.version + "/Content/" + file.Name,
                                 name = "Content/" + file.Name,
+                                assemblyName = null,
                                 version = null,
                                 publicKeyToken = null,
                                 digestMethod = "sha256",
@@ -159,6 +163,8 @@ namespace ClickOnce.Packager
             public string path { get; set; }
 
             public string name { get; set; }
+
+            public string assemblyName { get; set; }
 
             public string version { get; set; }
 
