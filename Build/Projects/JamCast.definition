@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Name="JamCast2" Path="JamCast2" Type="App" Platforms="Windows,MacOS">
+<Project Name="JamCast" Path="JamCast" Type="App" Platforms="Windows,MacOS">
   <References>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -3,5 +3,7 @@
 if host-in Windows,MacOS
   generate
   build
+
+  execute ClickOnce.Packager
 endif
 

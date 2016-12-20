@@ -12,3 +12,6 @@ Bootstrap/Bootstrap.Windows.csproj.user
 .vs/
 
 ffmpeg.nuget/
+publish/
+*.csproj.user
+*_TemporaryKey.pfx
