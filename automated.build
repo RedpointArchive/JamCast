@@ -4,6 +4,11 @@ if host-in Windows,MacOS
   generate
   build
 
-  execute ClickOnce.Packager
+  if host-in Windows
+    execute ClickOnce.Packager Windows
+  endif
+  if host-in MacOS
+    execute ClickOnce.Packager MacOS
+  endif
 endif
 

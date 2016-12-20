@@ -15,18 +15,24 @@ namespace ClickOnce.Packager
     {
         public static void Main(string[] args)
         {
-            var directory = new FileInfo(Assembly.GetEntryAssembly().Location).Directory;
+            var platform = args.Length > 0 ? args[0] : "Windows";
+
+            var directory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory;
             var contentDirectory = directory.GetDirectories().FirstOrDefault(x => x.Name == "Content");
 
             Console.WriteLine("Starting creation of bundle...");
 
-            if (File.Exists("../../../../../Bundle.zip"))
+            Environment.CurrentDirectory = directory.FullName;
+
+            var bundlePath = Path.Combine(directory.FullName, "../../../../../Bundle." + platform + ".zip");
+
+            if (File.Exists(bundlePath))
             {
-                File.Delete("../../../../../Bundle.zip");
+                File.Delete(bundlePath);
             }
 
             Console.WriteLine("Opening ZIP file...");
-            using (var zipFile = new FileStream("../../../../../Bundle.zip", FileMode.Create, FileAccess.Write))
+            using (var zipFile = new FileStream(bundlePath, FileMode.Create, FileAccess.Write))
             {
                 using (var zip = new ZipArchive(zipFile, ZipArchiveMode.Create, true))
                 {
@@ -86,27 +92,30 @@ namespace ClickOnce.Packager
                         }
                     }
 
-                    foreach (var file in contentDirectory.GetFiles())
+                    if (contentDirectory != null)
                     {
-                        manifest.files.Add(new ManifestFile
+                        foreach (var file in contentDirectory.GetFiles())
                         {
-                            path = manifest.version + "/Content/" + file.Name,
-                            name = "Content/" + file.Name,
-                            version = null,
-                            publicKeyToken = null,
-                            digestMethod = "sha256",
-                            digestValue = GetSha256DigestValueForFile(file),
-                            size = file.Length
-                        });
-
-                        Console.WriteLine("Processing Content/" + file.Name + "...");
-
-                        var entry = zip.CreateEntry(manifest.version + "/Content/" + file.Name);
-                        using (var target = entry.Open())
-                        {
-                            using (var reader = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
+                            manifest.files.Add(new ManifestFile
                             {
-                                reader.CopyTo(target);
+                                path = manifest.version + "/Content/" + file.Name,
+                                name = "Content/" + file.Name,
+                                version = null,
+                                publicKeyToken = null,
+                                digestMethod = "sha256",
+                                digestValue = GetSha256DigestValueForFile(file),
+                                size = file.Length
+                            });
+
+                            Console.WriteLine("Processing Content/" + file.Name + "...");
+
+                            var entry = zip.CreateEntry(manifest.version + "/Content/" + file.Name);
+                            using (var target = entry.Open())
+                            {
+                                using (var reader = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
+                                {
+                                    reader.CopyTo(target);
+                                }
                             }
                         }
                     }
