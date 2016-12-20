@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Name="JamCast2" Path="JamCast2" Type="App" Platforms="Windows,MacOS">
+  <References>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="ffmpeg" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Newtonsoft.Json" />
+  </References>
+  <Files>
+    <Compile Include="AuthInfo.cs" />
+    <Compile Include="Manager.cs" />
+    <Compile Include="Manager.Windows.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Windows\Auth.Windows.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Auth.Windows.designer.cs">
+      <DependentUpon>Auth.Windows.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TrayIcon.cs" />
+    <EmbeddedResource Include="Windows\Auth.Windows.resx">
+      <DependentUpon>Auth.Windows.cs</DependentUpon>
+    </EmbeddedResource>
+  </Files>
+</Project>
