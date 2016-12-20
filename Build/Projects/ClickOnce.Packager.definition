@@ -2,7 +2,9 @@
 <Project Name="ClickOnce.Packager" Path="ClickOnce.Packager" Type="Console" Platforms="Windows,MacOS">
   <References>
     <Reference Include="System" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="JamCast" />
+    <Reference Include="Newtonsoft.Json" />
   </References>
   <Files>
     <Compile Include="Program.cs" />

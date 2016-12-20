@@ -1,4 +1,4 @@
-﻿#if PLATFORM_WINDOWS
+﻿#if FALSE
 
 using Jamcast2;
 using System;
