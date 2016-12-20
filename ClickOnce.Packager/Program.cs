@@ -37,9 +37,9 @@ namespace ClickOnce.Packager
                 using (var zip = new ZipArchive(zipFile, ZipArchiveMode.Create, true))
                 {
                     var date = DateTime.UtcNow;
-                    var major = date.ToString("yy");
-                    var minor = date.ToString("MMdd");
-                    var patch = date.ToString("HHmmss");
+                    var major = date.ToString("yyMM");
+                    var minor = date.ToString("ddHH");
+                    var patch = date.ToString("mmss");
                     var build = Environment.GetEnvironmentVariable("BUILD_NUMBER") ?? "0";
 
                     var manifest = new Manifest();
