@@ -15,18 +15,22 @@ namespace ClickOnce.Packager
     {
         public static void Main(string[] args)
         {
-            var directory = new FileInfo(Assembly.GetEntryAssembly().Location).Directory;
+            var directory = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory;
             var contentDirectory = directory.GetDirectories().FirstOrDefault(x => x.Name == "Content");
 
             Console.WriteLine("Starting creation of bundle...");
 
-            if (File.Exists("../../../../../Bundle.zip"))
+            Environment.CurrentDirectory = directory.FullName;
+
+            var bundlePath = Path.Combine(directory.FullName, "../../../../../Bundle.zip");
+
+            if (File.Exists(bundlePath))
             {
-                File.Delete("../../../../../Bundle.zip");
+                File.Delete(bundlePath);
             }
 
             Console.WriteLine("Opening ZIP file...");
-            using (var zipFile = new FileStream("../../../../../Bundle.zip", FileMode.Create, FileAccess.Write))
+            using (var zipFile = new FileStream(bundlePath, FileMode.Create, FileAccess.Write))
             {
                 using (var zip = new ZipArchive(zipFile, ZipArchiveMode.Create, true))
                 {
