@@ -6,8 +6,9 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Linq;
+using Jamcast;
 
-namespace Jamcast2
+namespace Jamcast
 {
     public static class Program
     {
@@ -17,6 +18,7 @@ namespace Jamcast2
         public static string BasePath { get; private set; }
         public static string Host { get; private set; }
 
+        public static Manager Manager { get; private set; }
 
         private static string GetLocalIPAddress()
         {
@@ -116,7 +118,8 @@ namespace Jamcast2
                 }
             }
 
-
+            Manager = new Manager();
+            Manager.Run();
         }
     }
 }

@@ -75,7 +75,7 @@ namespace Client
 
         private async Task<AuthInfo> Authenticate(string emailAddress, string password)
         {
-            var url = @"http://melbggj17.jamhost.org/jamcast/authenticate";
+            var url = @"http://melb17.jamhost.org/jamcast/authenticate";
             var client = new WebClient();
 
             var result = await client.UploadValuesTaskAsync(url, "POST", new NameValueCollection
@@ -85,7 +85,8 @@ namespace Client
             });
 
             var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
-            if ((bool)resultParsed.has_error)
+            var has_error = (bool?)resultParsed.has_error;
+            if (has_error.HasValue && has_error.Value)
             {
                 return new AuthInfo
                 {
@@ -98,8 +99,8 @@ namespace Client
                 return new AuthInfo
                 {
                     IsValid = true,
-                    FullName = (string) resultParsed.result.fullName,
-                    EmailAddress = (string)resultParsed.result.email,
+                    FullName = (string) resultParsed.fullName,
+                    EmailAddress = (string)resultParsed.email,
                 };
             }
         }

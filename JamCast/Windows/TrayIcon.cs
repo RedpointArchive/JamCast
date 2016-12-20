@@ -1,6 +1,5 @@
-﻿#if FALSE
+﻿#if PLATFORM_WINDOWS
 
-using Jamcast2;
 using System;
 using System.ComponentModel;
 using System.Drawing;

@@ -43,6 +43,47 @@ namespace Jamcast
             }
         }
 
+        public void Run()
+        {
+            LoadUsername();
+
+            ListenForApplicationExit(OnStop);
+
+            using (var reader = new StreamReader(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "JamCast", "guid.txt")))
+            {
+                _guid = reader.ReadToEnd().Trim();
+            }
+
+            //_pubSub = new PubSubPersistent();
+            //this._pubSub.TopicsToCreate.Add("projectors");
+            //this._pubSub.TopicsToCreate.Add("client-" + _guid);
+            //this._pubSub.SubscriptionsToCreate.Add(new KeyValuePair<string, string>(
+            //    "client-" + _guid,
+            //    "client-" + _guid));
+            //this._pubSub.Reconfigure(
+            //    "http://melbggj16.info/jamcast/gettoken/api",
+            //    "melbourne-global-game-jam-16");
+            //this._pubSub.MessageRecieved += PubSubOnMessageRecieved;
+
+            ConfigureSystemTrayIcon();
+
+            StartLoop();
+        }
+
+        /// <summary>
+        /// This will be called just before we terminate.
+        /// </summary>
+        private void OnStop()
+        {
+            
+        }
+
+        partial void ListenForApplicationExit(Action onExit);
+
         partial void LoginPrompt();
+
+        partial void ConfigureSystemTrayIcon();
+
+        partial void StartLoop();
     }
 }

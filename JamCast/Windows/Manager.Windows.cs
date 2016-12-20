@@ -1,4 +1,4 @@
-﻿#if FALSE
+﻿#if PLATFORM_WINDOWS
 
 using Client;
 using System;
@@ -13,6 +13,8 @@ namespace Jamcast
 {
     partial class Manager
     {
+        private TrayIcon _trayIcon;
+
         partial void LoginPrompt() {
         // Ask the person who they are ;)
         AuthForm way = new AuthForm();
@@ -31,6 +33,21 @@ namespace Jamcast
                     writer.WriteLine(_name);
                     writer.WriteLine(_email);
                 }
+        }
+
+        partial void ListenForApplicationExit(Action onExit)
+        {
+            Application.ApplicationExit += (sender, e) => onExit();
+        }
+
+        partial void ConfigureSystemTrayIcon()
+        {
+            _trayIcon = new TrayIcon(this);
+        }
+
+        partial void StartLoop()
+        {
+            Application.Run();
         }
     }
 }
