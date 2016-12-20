@@ -1,35 +1,33 @@
 {
   "version": "1.0.0.1",
-  "files": {
-    "windows": [
-      {
-        "name": "JamCast.exe.deploy",
-        "version": "1.0.0.1",
-        "digestMethod": "sha256",
-        "digestValue": "LUUODvKqkNqTlwdhOw3QDI5h0u1GQml/bnUmWH/VHK4="
-      },
-      {
-        "name": "Newtonsoft.Json.dll.deploy",
-        "version": "9.0.0.0",
-        "publicKeyToken": "30AD4FE6B2A6AEED",
-        "digestMethod": "sha256",
-        "digestValue": "V14w+Y5OpCyeUW7ci7sprYtQsXOj5rNrW6OeEzzOlAY="
-      },
-      {
-        "name": "Content/ffmpeg.exe",
-        "digestMethod": "sha256",
-        "digestValue": "IgtigEm5+/n28hSSPjRuyMm/hNMBqRO9V6hMEhRhDp0="
-      },
-      {
-        "name": "Content/ffplay.exe",
-        "digestMethod": "sha256",
-        "digestValue": "xW4msIMpsNKtttFcnlVAtQlbjbo3xCblAEwXo3ha5i8="
-      },
-      {
-        "name": "Content/ffprobe.exe",
-        "digestMethod": "sha256",
-        "digestValue": "Ka3zpp8H+FXOM3sMu6BxewNxDtYN98kMwcbN7T7KRuE="
-      }
-    ]
-  }
+  "files": [
+    {
+      "name": "JamCast.exe.deploy",
+      "version": "1.0.0.1",
+      "digestMethod": "sha256",
+      "digestValue": "LUUODvKqkNqTlwdhOw3QDI5h0u1GQml/bnUmWH/VHK4="
+    },
+    {
+      "name": "Newtonsoft.Json.dll.deploy",
+      "version": "9.0.0.0",
+      "publicKeyToken": "30AD4FE6B2A6AEED",
+      "digestMethod": "sha256",
+      "digestValue": "V14w+Y5OpCyeUW7ci7sprYtQsXOj5rNrW6OeEzzOlAY="
+    },
+    {
+      "name": "Content/ffmpeg.exe",
+      "digestMethod": "sha256",
+      "digestValue": "IgtigEm5+/n28hSSPjRuyMm/hNMBqRO9V6hMEhRhDp0="
+    },
+    {
+      "name": "Content/ffplay.exe",
+      "digestMethod": "sha256",
+      "digestValue": "xW4msIMpsNKtttFcnlVAtQlbjbo3xCblAEwXo3ha5i8="
+    },
+    {
+      "name": "Content/ffprobe.exe",
+      "digestMethod": "sha256",
+      "digestValue": "Ka3zpp8H+FXOM3sMu6BxewNxDtYN98kMwcbN7T7KRuE="
+    }
+  ]
 }
