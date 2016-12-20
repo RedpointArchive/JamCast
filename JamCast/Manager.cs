@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Jamcast2
+namespace Jamcast
 {
     public partial class Manager
     {
@@ -16,13 +16,13 @@ namespace Jamcast2
 
         public string User { get { return this._name; } }
 
+        string userPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "JamCast",
+            "user.txt");
 
         private void LoadUsername()
         {
-            var userPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "JamCast",
-                "user.txt");
             Directory.CreateDirectory(
                 Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),

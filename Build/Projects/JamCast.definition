@@ -10,7 +10,6 @@
   <Files>
     <Compile Include="AuthInfo.cs" />
     <Compile Include="Manager.cs" />
-    <Compile Include="Manager.Windows.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Windows\Auth.Windows.cs">
       <SubType>Form</SubType>
@@ -18,6 +17,7 @@
     <Compile Include="Windows\Auth.Windows.designer.cs">
       <DependentUpon>Auth.Windows.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Manager.Windows.cs" />
     <Compile Include="Windows\TrayIcon.cs" />
     <EmbeddedResource Include="Windows\Auth.Windows.resx">
       <DependentUpon>Auth.Windows.cs</DependentUpon>

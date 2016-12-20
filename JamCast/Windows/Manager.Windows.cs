@@ -1,12 +1,15 @@
 ﻿#if PLATFORM_WINDOWS
 
+using Client;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Jamcast2
+namespace Jamcast
 {
     partial class Manager
     {

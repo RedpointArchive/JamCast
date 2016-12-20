@@ -1,13 +1,13 @@
 ﻿#if PLATFORM_WINDOWS
 
+using Jamcast2;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Net;
 using System.Windows.Forms;
-using Client.Properties;
 
-namespace Client
+namespace Jamcast
 {
     public class TrayIcon
     {
@@ -22,10 +22,12 @@ namespace Client
             IContainer container = new Container();
 
             // Create the notify icon.
-            this.m_NotifyIcon = new NotifyIcon(container);
-            this.m_NotifyIcon.Icon = Resources.TrayOff;
-            this.m_NotifyIcon.Text = "JamCast Client - " + manager.User;
-            this.m_NotifyIcon.Visible = true;
+            m_NotifyIcon = new NotifyIcon(container)
+            {
+                //Icon = Resources.TrayOff,
+                Text = "JamCast Client - " + manager.User,
+                Visible = true
+            };
             this.m_NotifyIcon.DoubleClick += new EventHandler(item_Click);
         }
 
