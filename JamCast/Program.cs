@@ -57,13 +57,8 @@ namespace Jamcast2
                 return new PhysicalAddress[0];
             }
         }
-
-
-#if PLATFORM_MACOS
-		internal static void InternalMain(string[] args)
-#else
+        
         internal static void Main(string[] args)
-#endif
         {
             var path = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
