@@ -75,7 +75,7 @@ namespace Client
 
         private async Task<AuthInfo> Authenticate(string emailAddress, string password)
         {
-            var url = @"http://melbggj16.info/jamcast/authenticate/api";
+            var url = @"http://melbggj17.jamhost.org/jamcast/authenticate";
             var client = new WebClient();
 
             var result = await client.UploadValuesTaskAsync(url, "POST", new NameValueCollection
