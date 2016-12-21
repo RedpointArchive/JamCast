@@ -54,17 +54,6 @@ namespace Jamcast
                 _guid = reader.ReadToEnd().Trim();
             }
 
-            //_pubSub = new PubSubPersistent();
-            //this._pubSub.TopicsToCreate.Add("projectors");
-            //this._pubSub.TopicsToCreate.Add("client-" + _guid);
-            //this._pubSub.SubscriptionsToCreate.Add(new KeyValuePair<string, string>(
-            //    "client-" + _guid,
-            //    "client-" + _guid));
-            //this._pubSub.Reconfigure(
-            //    "http://melbggj16.info/jamcast/gettoken/api",
-            //    "melbourne-global-game-jam-16");
-            //this._pubSub.MessageRecieved += PubSubOnMessageRecieved;
-
             ConfigureSystemTrayIcon();
 
             StartLoop();

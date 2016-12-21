@@ -13,9 +13,15 @@ namespace Jamcast
         private NotifyIcon m_NotifyIcon = null;
         private Manager m_Manager = null;
 
+        Icon TrayOff;
+        Icon TrayOn;
+        Icon TrayCountdown;
+
         public TrayIcon(Manager manager)
         {
             this.m_Manager = manager;
+
+            TrayOff = new Icon("Content/TrayOff.ico");
 
             // Create the container.
             IContainer container = new Container();
@@ -23,7 +29,7 @@ namespace Jamcast
             // Create the notify icon.
             m_NotifyIcon = new NotifyIcon(container)
             {
-                //Icon = Resources.TrayOff,
+                Icon = TrayOff,
                 Text = "JamCast Client - " + manager.User,
                 Visible = true
             };
