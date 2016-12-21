@@ -37,9 +37,9 @@ namespace ClickOnce.Packager
                 using (var zip = new ZipArchive(zipFile, ZipArchiveMode.Create, true))
                 {
                     var date = DateTime.UtcNow;
-                    var major = date.ToString("yy");
-                    var minor = date.ToString("MMdd");
-                    var patch = date.ToString("HHmmss");
+                    var major = date.ToString("yyMM");
+                    var minor = date.ToString("ddHH");
+                    var patch = date.ToString("mmss");
                     var build = Environment.GetEnvironmentVariable("BUILD_NUMBER") ?? "0";
 
                     var manifest = new Manifest();
@@ -50,6 +50,7 @@ namespace ClickOnce.Packager
                     {
                         string version = null;
                         string publicKeyToken = null;
+                        string assemblyName = null;
 
                         if (!(file.Extension == ".dll" || file.Extension == ".exe"))
                         {
@@ -66,6 +67,7 @@ namespace ClickOnce.Packager
                         try
                         {
                             var asm = Assembly.LoadFile(file.FullName);
+                            assemblyName = asm.GetName().Name;
                             version = asm.GetName().Version.ToString();
                             publicKeyToken = BitConverter.ToString(asm.GetName().GetPublicKeyToken()).ToUpperInvariant().Replace("-", "");
                         }
@@ -75,6 +77,7 @@ namespace ClickOnce.Packager
                         {
                             path = manifest.version + "/" + file.Name + ".deploy",
                             name = file.Name,
+                            assemblyName = assemblyName,
                             version = version,
                             publicKeyToken = string.IsNullOrWhiteSpace(publicKeyToken) ? null : publicKeyToken,
                             digestMethod = "sha256",
@@ -96,10 +99,18 @@ namespace ClickOnce.Packager
                     {
                         foreach (var file in contentDirectory.GetFiles())
                         {
+                            var fileName = file.Name;
+
+                            if (file.Extension == ".dll" || file.Extension == ".exe")
+                            {
+                                fileName = fileName + ".deploy";
+                            }
+
                             manifest.files.Add(new ManifestFile
                             {
-                                path = manifest.version + "/Content/" + file.Name,
+                                path = manifest.version + "/Content/" + fileName,
                                 name = "Content/" + file.Name,
+                                assemblyName = null,
                                 version = null,
                                 publicKeyToken = null,
                                 digestMethod = "sha256",
@@ -109,7 +120,7 @@ namespace ClickOnce.Packager
 
                             Console.WriteLine("Processing Content/" + file.Name + "...");
 
-                            var entry = zip.CreateEntry(manifest.version + "/Content/" + file.Name);
+                            var entry = zip.CreateEntry(manifest.version + "/Content/" + fileName);
                             using (var target = entry.Open())
                             {
                                 using (var reader = new FileStream(file.FullName, FileMode.Open, FileAccess.Read))
@@ -159,6 +170,8 @@ namespace ClickOnce.Packager
             public string path { get; set; }
 
             public string name { get; set; }
+
+            public string assemblyName { get; set; }
 
             public string version { get; set; }
 

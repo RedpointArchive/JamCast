@@ -16,3 +16,4 @@ publish/
 *.csproj.user
 *_TemporaryKey.pfx
 Bundle.zip
+Bundle.*.zip

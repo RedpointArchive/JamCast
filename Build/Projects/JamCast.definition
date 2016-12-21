@@ -24,5 +24,6 @@
     <EmbeddedResource Include="Windows\Auth.Windows.resx">
       <DependentUpon>Auth.Windows.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest" />
   </Files>
 </Project>
