@@ -11,6 +11,7 @@
   </References>
   <Files>
     <Compile Include="AuthInfo.cs" />
+    <Compile Include="DeploymentInfo.cs" />
     <Compile Include="Manager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Windows\Auth.Windows.cs">
@@ -21,9 +22,20 @@
     </Compile>
     <Compile Include="Windows\Manager.Windows.cs" />
     <Compile Include="Windows\TrayIcon.cs" />
+    <Content Include="Content\TrayCountdown.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\TrayOff.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\TrayOn.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="Windows\Auth.Windows.resx">
       <DependentUpon>Auth.Windows.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="app.manifest" />
+    <None Include="siteinfo.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </Files>
 </Project>

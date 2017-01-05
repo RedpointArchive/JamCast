@@ -12,6 +12,8 @@ namespace Jamcast
 {
     public static class Program
     {
+        public static DeploymentInfo SiteInfo {get; private set;}
+
         private static Guid guid;
 
         public static string Status { get; private set; }
@@ -20,7 +22,7 @@ namespace Jamcast
 
         public static Manager Manager { get; private set; }
 
-        private static string GetLocalIPAddress()
+        public static string GetLocalIPAddress()
         {
             IPHostEntry host;
             var localIP = "";
@@ -36,7 +38,7 @@ namespace Jamcast
             return localIP;
         }
 
-        private static IPAddress[] GetAllKnownIPAddresses()
+        public static IPAddress[] GetAllKnownIPAddresses()
         {
             try
             {
@@ -48,11 +50,13 @@ namespace Jamcast
             }
         }
 
-        private static IEnumerable<PhysicalAddress> GetAllKnownHWAddresses()
+        public static IEnumerable<PhysicalAddress> GetAllKnownHWAddresses()
         {
             try
             {
-                return NetworkInterface.GetAllNetworkInterfaces().Select(nic => nic.GetPhysicalAddress());
+                return NetworkInterface.GetAllNetworkInterfaces()
+                    .Where(nic => nic.NetworkInterfaceType == NetworkInterfaceType.Ethernet)
+                    .Select(nic => nic.GetPhysicalAddress());
             }
             catch (Exception)
             {
@@ -113,7 +117,9 @@ namespace Jamcast
                 }
             }
 
-            Manager = new Manager();
+            SiteInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<DeploymentInfo>(File.ReadAllText("siteinfo.json"));
+
+            Manager = new Manager(SiteInfo);
             Manager.Run();
         }
     }
