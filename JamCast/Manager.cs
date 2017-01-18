@@ -6,14 +6,24 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using JamCast.Services;
 
 namespace Jamcast
 {
-    public partial class Manager
+    public interface IManager
     {
-        public Manager(DeploymentInfo siteinfo)
+        void Run();
+    }
+
+    public partial class Manager : IManager
+    {
+        private readonly IComputerInfoService _computerInfo;
+        private readonly IMacAddressReportingService _macAddressReporting;
+
+        public Manager(IComputerInfoService computerInfo, IMacAddressReportingService macAddressReporting)
         {
-            SiteInfo = siteinfo;
+            _computerInfo = computerInfo;
+            _macAddressReporting = macAddressReporting;
         }
 
         private string _name = "Unknown!";
@@ -22,8 +32,6 @@ namespace Jamcast
         private string _guid;
 
         public string User { get { return this._name; } }
-
-        public DeploymentInfo SiteInfo { get; private set; }
 
         string userPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -56,7 +64,7 @@ namespace Jamcast
         {
             LoadUsername();
 
-            ReportMacAddress();
+            _macAddressReporting.ReportMacAddress();
 
             ListenForApplicationExit(OnStop);
 
@@ -68,23 +76,6 @@ namespace Jamcast
             ConfigureSystemTrayIcon();
 
             StartLoop();
-        }
-
-        private void ReportMacAddress()
-        {
-            var client = new WebClient();
-            client.BaseAddress = SiteInfo.Url;
-            var ip_addresses = Program.GetAllKnownIPAddresses();
-            var hostname = Program.Host;
-            foreach (var mac in Program.GetAllKnownHWAddresses())
-            {
-                var data = new NameValueCollection();
-                data["email"] = _email;
-                data["hostname"] = hostname;
-                data["mac_address"] = mac.ToString();
-                data["ip_addresses"] = string.Join(",", ip_addresses.Select(i => i.ToString()));
-                client.UploadValues("/jamcast/reportmacaddress", data);
-            }
         }
 
         /// <summary>

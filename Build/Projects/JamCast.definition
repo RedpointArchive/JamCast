@@ -8,18 +8,27 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="ffmpeg" />
     <Reference Include="Newtonsoft.Json" />
+    <Reference Include="Protoinject" />
   </References>
   <Files>
     <Compile Include="AuthInfo.cs" />
-    <Compile Include="DeploymentInfo.cs" />
     <Compile Include="Manager.cs" />
+    <Compile Include="Models\ComputerInfo.cs" />
+    <Compile Include="Models\PersistentComputerInfo.cs" />
+    <Compile Include="Models\SiteInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Services\ComputerInfoService.cs" />
+    <Compile Include="Services\IAuthenticator.cs" />
+    <Compile Include="Services\MacAddressReportingService.cs" />
+    <Compile Include="Services\SiteInfoService.cs" />
+    <Compile Include="Services\UserInfoService.cs" />
     <Compile Include="Windows\Auth.Windows.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Windows\Auth.Windows.designer.cs">
       <DependentUpon>Auth.Windows.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\Authenticator.Windows.cs" />
     <Compile Include="Windows\Manager.Windows.cs" />
     <Compile Include="Windows\TrayIcon.cs" />
     <Content Include="Content\TrayCountdown.ico">

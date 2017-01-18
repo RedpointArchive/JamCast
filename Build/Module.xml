@@ -7,5 +7,6 @@
   <Packages>
     <Package Repository="https://api.nuget.org/v3/index.json" Package="ffmpeg.nuget" Version="master" />
     <Package Uri="https-nuget://www.nuget.org/api/v2/|Newtonsoft.Json" Folder="Newtonsoft.Json" GitRef="9.0.1" />
+    <Package Repository="https://api.nuget.org/v3/index.json" Package="Protoinject" Version="master" />
   </Packages>
 </Module>

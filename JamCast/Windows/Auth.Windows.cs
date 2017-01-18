@@ -1,18 +1,52 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.Drawing;
+using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using JamCast.Models;
 using Newtonsoft.Json;
 
 namespace Client
 {
     public partial class AuthForm : Form
     {
-        public AuthForm()
+        private readonly SiteInfo _siteInfo;
+
+        public AuthForm(SiteInfo siteInfo)
         {
+            _siteInfo = siteInfo;
+
             InitializeComponent();
+        }
+
+        private void AuthForm_Load(object sender, EventArgs e)
+        {
+            Text = _siteInfo.SiteName;
+            _titleLabel.Text = "Welcome to " + _siteInfo.SiteName;
+            _descriptionLabel.Text = "Sign in with the email address and password you used to buy your ticket on " +
+                                     _siteInfo.Url;
+
+            using (var client = new WebClient())
+            {
+                using (var memory = new MemoryStream())
+                {
+                    var bytes = client.DownloadData(_siteInfo.ImageCover);
+                    memory.Write(bytes, 0, bytes.Length);
+                    memory.Seek(0, SeekOrigin.Begin);
+                    _imageBox.Image = new Bitmap(memory);
+                }
+
+                using (var memory = new MemoryStream())
+                {
+                    var bytes = client.DownloadData(_siteInfo.ImageFavicon);
+                    memory.Write(bytes, 0, bytes.Length);
+                    memory.Seek(0, SeekOrigin.Begin);
+                    this.Icon = Icon.FromHandle(new Bitmap(memory).GetHicon());
+                }
+            }
         }
 
         private void _login_Click(object sender, System.EventArgs e)
@@ -75,7 +109,7 @@ namespace Client
 
         private async Task<AuthInfo> Authenticate(string emailAddress, string password)
         {
-            var url = @"http://melb17.jamhost.org/jamcast/authenticate";
+            var url = _siteInfo.Url + @"jamcast/api/authenticate";
             var client = new WebClient();
 
             var result = await client.UploadValuesTaskAsync(url, "POST", new NameValueCollection

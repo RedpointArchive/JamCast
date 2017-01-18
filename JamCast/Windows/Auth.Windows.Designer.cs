@@ -33,15 +33,15 @@ namespace Client
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthForm));
             this._login = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this._titleLabel = new System.Windows.Forms.Label();
+            this._descriptionLabel = new System.Windows.Forms.Label();
             this._emailAddress = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this._password = new System.Windows.Forms.TextBox();
             this._error = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this._imageBox = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this._imageBox)).BeginInit();
             this.SuspendLayout();
             // 
             // _login
@@ -56,28 +56,28 @@ namespace Client
             this._login.UseVisualStyleBackColor = true;
             this._login.Click += new System.EventHandler(this._login_Click);
             // 
-            // label1
+            // _titleLabel
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this._titleLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(12, 187);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(435, 80);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Welcome to the Melbourne Global Game Jam 2016!";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._titleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._titleLabel.Location = new System.Drawing.Point(12, 187);
+            this._titleLabel.Name = "_titleLabel";
+            this._titleLabel.Size = new System.Drawing.Size(435, 80);
+            this._titleLabel.TabIndex = 3;
+            this._titleLabel.Text = "Welcome to the Melbourne Global Game Jam 2016!";
+            this._titleLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label2
+            // _descriptionLabel
             // 
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(44, 267);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(368, 35);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Sign in with the email address and password you used to buy your ticket on https:" +
+            this._descriptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this._descriptionLabel.Location = new System.Drawing.Point(44, 267);
+            this._descriptionLabel.Name = "_descriptionLabel";
+            this._descriptionLabel.Size = new System.Drawing.Size(368, 35);
+            this._descriptionLabel.TabIndex = 4;
+            this._descriptionLabel.Text = "Sign in with the email address and password you used to buy your ticket on https:" +
     "//melbggj16.info/";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this._descriptionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // _emailAddress
             // 
@@ -129,18 +129,15 @@ namespace Client
             this._error.TabIndex = 11;
             this._error.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // pictureBox1
+            // _imageBox
             // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-#if FALSE
-            this.pictureBox1.Image = global::Client.Properties.Resources.banner;
-#endif
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(459, 171);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 12;
-            this.pictureBox1.TabStop = false;
+            this._imageBox.Dock = System.Windows.Forms.DockStyle.Top;
+            this._imageBox.Location = new System.Drawing.Point(0, 0);
+            this._imageBox.Name = "_imageBox";
+            this._imageBox.Size = new System.Drawing.Size(459, 171);
+            this._imageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this._imageBox.TabIndex = 12;
+            this._imageBox.TabStop = false;
             // 
             // AuthForm
             // 
@@ -149,21 +146,22 @@ namespace Client
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(459, 489);
             this.ControlBox = false;
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this._imageBox);
             this.Controls.Add(this._error);
             this.Controls.Add(this.label4);
             this.Controls.Add(this._password);
             this.Controls.Add(this.label3);
             this.Controls.Add(this._emailAddress);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this._descriptionLabel);
+            this.Controls.Add(this._titleLabel);
             this.Controls.Add(this._login);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "AuthForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Melbourne Global Game Jam 2016";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.Load += new System.EventHandler(this.AuthForm_Load);
+            ((System.ComponentModel.ISupportInitialize)(this._imageBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -171,13 +169,13 @@ namespace Client
 
 #endregion
         private Button _login;
-        private Label label1;
-        private Label label2;
+        private Label _titleLabel;
+        private Label _descriptionLabel;
         private TextBox _emailAddress;
         private Label label3;
         private Label label4;
         private TextBox _password;
         private Label _error;
-        private PictureBox pictureBox1;
+        private PictureBox _imageBox;
     }
 }
