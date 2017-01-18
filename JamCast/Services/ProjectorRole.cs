@@ -18,7 +18,7 @@ namespace JamCast.Services
         {
             if (_rtmpsUrl == null)
             {
-                _rtmpsUrl = _jamHostApiService.ProjectorStreamingInfo().RtmpsUrl.Replace("stream", "cast");
+                _rtmpsUrl = _jamHostApiService.ProjectorStreamingInfo().RtmpsUrl;
             }
 
             if (_projector == null || _projector.IsDisposed)
