@@ -1,23 +1,26 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Drawing;
 using System.IO;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using JamCast.Models;
-using Newtonsoft.Json;
+using JamCast.Services;
 
 namespace Client
 {
     public partial class AuthForm : Form
     {
         private readonly SiteInfo _siteInfo;
+        private readonly IImageService _imageService;
+        private readonly IJamHostApiService _jamHostApiService;
+        private readonly IComputerInfoService _computerInfoService;
 
-        public AuthForm(SiteInfo siteInfo)
+        public AuthForm(SiteInfo siteInfo, IImageService imageService, IJamHostApiService jamHostApiService, IComputerInfoService computerInfoService)
         {
             _siteInfo = siteInfo;
+            _imageService = imageService;
+            _jamHostApiService = jamHostApiService;
+            _computerInfoService = computerInfoService;
 
             InitializeComponent();
         }
@@ -28,24 +31,21 @@ namespace Client
             _titleLabel.Text = "Welcome to " + _siteInfo.SiteName;
             _descriptionLabel.Text = "Sign in with the email address and password you used to buy your ticket on " +
                                      _siteInfo.Url;
-
-            using (var client = new WebClient())
+            
+            using (var memory = new MemoryStream())
             {
-                using (var memory = new MemoryStream())
-                {
-                    var bytes = client.DownloadData(_siteInfo.ImageCover);
-                    memory.Write(bytes, 0, bytes.Length);
-                    memory.Seek(0, SeekOrigin.Begin);
-                    _imageBox.Image = new Bitmap(memory);
-                }
+                var bytes = _imageService.GetImageCoverBytes();
+                memory.Write(bytes, 0, bytes.Length);
+                memory.Seek(0, SeekOrigin.Begin);
+                _imageBox.Image = new Bitmap(memory);
+            }
 
-                using (var memory = new MemoryStream())
-                {
-                    var bytes = client.DownloadData(_siteInfo.ImageFavicon);
-                    memory.Write(bytes, 0, bytes.Length);
-                    memory.Seek(0, SeekOrigin.Begin);
-                    this.Icon = Icon.FromHandle(new Bitmap(memory).GetHicon());
-                }
+            using (var memory = new MemoryStream())
+            {
+                var bytes = _imageService.GetImageFaviconBytes();
+                memory.Write(bytes, 0, bytes.Length);
+                memory.Seek(0, SeekOrigin.Begin);
+                this.Icon = Icon.FromHandle(new Bitmap(memory).GetHicon());
             }
         }
 
@@ -59,18 +59,23 @@ namespace Client
             var emailAddress = _emailAddress.Text;
             var password = _password.Text;
 
-            Task.Run(async () =>
+            var needsToFinalize = true;
+
+            Task.Run(() =>
             {
                 try
                 {
-                    var authenticated = await Authenticate(emailAddress, password);
+                    var authenticated = _jamHostApiService.Authenticate(emailAddress, password, _computerInfoService.GetComputerInfo().Host);
                     if (authenticated.IsValid)
                     {
+                        _computerInfoService.SetSessionInformation(authenticated.SessionId, authenticated.SecretKey); 
+
                         AuthResult = authenticated;
                         this.Invoke(new Action(() =>
                         {
                             this.DialogResult = DialogResult.OK;
                             this.Close();
+                            needsToFinalize = false;
                         }));
                     }
                     else
@@ -94,50 +99,21 @@ namespace Client
                 }
                 finally
                 {
-                    this.Invoke(new Action(() =>
+                    if (needsToFinalize)
                     {
-                        _emailAddress.Enabled = true;
-                        _password.Enabled = true;
-                        _login.Enabled = true;
-                        _login.Text = "Login";
-                    }));
+                        this.Invoke(new Action(() =>
+                        {
+                            _emailAddress.Enabled = true;
+                            _password.Enabled = true;
+                            _login.Enabled = true;
+                            _login.Text = "Login";
+                        }));
+                    }
                 }
             });
         }
 
         public AuthInfo AuthResult { get; private set; }
-
-        private async Task<AuthInfo> Authenticate(string emailAddress, string password)
-        {
-            var url = _siteInfo.Url + @"jamcast/api/authenticate";
-            var client = new WebClient();
-
-            var result = await client.UploadValuesTaskAsync(url, "POST", new NameValueCollection
-            {
-                {"email", emailAddress},
-                {"password", password}
-            });
-
-            var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
-            var has_error = (bool?)resultParsed.has_error;
-            if (has_error.HasValue && has_error.Value)
-            {
-                return new AuthInfo
-                {
-                    IsValid = false,
-                    Error = (string) resultParsed.error
-                };
-            }
-            else
-            {
-                return new AuthInfo
-                {
-                    IsValid = true,
-                    FullName = (string) resultParsed.fullName,
-                    EmailAddress = (string)resultParsed.email,
-                };
-            }
-        }
 
         private void _emailAddress_KeyUp(object sender, KeyEventArgs e)
         {

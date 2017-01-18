@@ -15,5 +15,8 @@ namespace JamCast.Models
 
         [JsonProperty("image_favicon")]
         public string ImageFavicon { get; set; }
+
+        [JsonProperty("id")]
+        public string Id { get; set; }
     }
 }

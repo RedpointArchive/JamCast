@@ -1,6 +1,7 @@
 ﻿{
+  "id": "melb17", 
   "sitename": "Melbourne Global Game Jam 2017",
-  "url": "https://melb17.jamhost.org/",
+  "url": "http://localhost:5000/",
   "image_cover": "https://storage.jamhost.org/melb17/dd69b4a86f584be982e6c8728e290afb/website_1182x438px.png",
   "image_favicon": "https://storage.jamhost.org/melb17/f6d55ed59e804b20bbaed2d943ce062c/favicon-194x194.png"
 }

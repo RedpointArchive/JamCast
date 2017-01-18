@@ -11,14 +11,16 @@
     <Reference Include="Protoinject" />
   </References>
   <Files>
-    <Compile Include="AuthInfo.cs" />
     <Compile Include="Manager.cs" />
+    <Compile Include="Models\AuthInfo.cs" />
     <Compile Include="Models\ComputerInfo.cs" />
     <Compile Include="Models\PersistentComputerInfo.cs" />
     <Compile Include="Models\SiteInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Services\ComputerInfoService.cs" />
     <Compile Include="Services\IAuthenticator.cs" />
+    <Compile Include="Services\ImageService.cs" />
+    <Compile Include="Services\JamHostApiService.cs" />
     <Compile Include="Services\MacAddressReportingService.cs" />
     <Compile Include="Services\SiteInfoService.cs" />
     <Compile Include="Services\UserInfoService.cs" />
@@ -30,7 +32,6 @@
     </Compile>
     <Compile Include="Windows\Authenticator.Windows.cs" />
     <Compile Include="Windows\Manager.Windows.cs" />
-    <Compile Include="Windows\TrayIcon.cs" />
     <Content Include="Content\TrayCountdown.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

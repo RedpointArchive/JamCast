@@ -9,5 +9,9 @@
         public bool IsValid { get; set; }
 
         public string Error { get; set; }
+
+        public string SessionId { get; set; }
+
+        public string SecretKey { get; set; }
     }
 }

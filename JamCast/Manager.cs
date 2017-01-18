@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JamCast.Services;
 
-namespace Jamcast
+namespace JamCast
 {
     public interface IManager
     {
@@ -19,59 +19,27 @@ namespace Jamcast
     {
         private readonly IComputerInfoService _computerInfo;
         private readonly IMacAddressReportingService _macAddressReporting;
+        private readonly IImageService _imageService;
+        private readonly IUserInfoService _userInfo;
 
-        public Manager(IComputerInfoService computerInfo, IMacAddressReportingService macAddressReporting)
+        public Manager(IComputerInfoService computerInfo, IMacAddressReportingService macAddressReporting, IImageService imageService, IUserInfoService userInfo)
         {
             _computerInfo = computerInfo;
             _macAddressReporting = macAddressReporting;
-        }
-
-        private string _name = "Unknown!";
-        private string _email = string.Empty;
-
-        private string _guid;
-
-        public string User { get { return this._name; } }
-
-        string userPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "JamCast",
-            "user.txt");
-
-        private void LoadUsername()
-        {
-            Directory.CreateDirectory(
-                Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    "JamCast"));
-
-            if (File.Exists(userPath))
-            {
-                using (var reader = new StreamReader(userPath))
-                {
-                    _name = reader.ReadLine()?.Trim();
-                    _email = reader.ReadLine()?.Trim();
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(_name) || string.IsNullOrWhiteSpace(_email))
-            {
-                LoginPrompt();
-            }
+            _imageService = imageService;
+            _userInfo = userInfo;
         }
 
         public void Run()
         {
-            LoadUsername();
+            if (!_userInfo.Authenticated)
+            {
+                throw new InvalidOperationException("Not authenticated when Manager started - This should be impossible!");
+            }
 
             _macAddressReporting.ReportMacAddress();
 
             ListenForApplicationExit(OnStop);
-
-            using (var reader = new StreamReader(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "JamCast", "guid.txt")))
-            {
-                _guid = reader.ReadToEnd().Trim();
-            }
 
             ConfigureSystemTrayIcon();
 
@@ -87,8 +55,6 @@ namespace Jamcast
         }
 
         partial void ListenForApplicationExit(Action onExit);
-
-        partial void LoginPrompt();
 
         partial void ConfigureSystemTrayIcon();
 

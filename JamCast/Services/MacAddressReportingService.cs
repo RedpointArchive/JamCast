@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 
@@ -11,34 +12,32 @@ namespace JamCast.Services
 
     public class MacAddressReportingService : IMacAddressReportingService
     {
-        private readonly ISiteInfoService _siteInfo;
         private readonly IComputerInfoService _computerInfo;
-        private readonly IUserInfoService _userInfo;
+        private readonly IJamHostApiService _jamHostApiService;
 
-        public MacAddressReportingService(ISiteInfoService siteInfo, IComputerInfoService computerInfo, IUserInfoService userInfo)
+        public MacAddressReportingService(IComputerInfoService computerInfo, IJamHostApiService jamHostApiService)
         {
-            _siteInfo = siteInfo;
             _computerInfo = computerInfo;
-            _userInfo = userInfo;
+            _jamHostApiService = jamHostApiService;
         }
 
         public void ReportMacAddress()
         {
-            var site = _siteInfo.GetSiteInfo();
-            var computer = _computerInfo.GetComputerInfo();
-
-            var client = new WebClient();
-            client.BaseAddress = site.Url;
-            var ipAddresses = computer.IpAddresses;
-            var hostname = computer.Host;
-            foreach (var mac in computer.HwAddresses)
+            try
             {
-                var data = new NameValueCollection();
-                data["email"] = _userInfo.Email;
-                data["hostname"] = hostname;
-                data["mac_address"] = mac.ToString();
-                data["ip_addresses"] = string.Join(",", ipAddresses.Select(i => i.ToString()));
-                client.UploadValues("/jamcast/reportmacaddress", data);
+                var computer = _computerInfo.GetComputerInfo();
+                
+                foreach (var mac in computer.HwAddresses)
+                {
+                    _jamHostApiService.ReportMacAddressInformation(
+                        computer.Host,
+                        mac.ToString(),
+                        string.Join(",", computer.IpAddresses.Select(i => i.ToString())));
+                }
+            }
+            catch (Exception ex)
+            {
+                // Do nothing.
             }
         }
     }
