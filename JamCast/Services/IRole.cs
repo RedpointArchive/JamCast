@@ -2,6 +2,8 @@
 {
     public interface IRole
     {
+        string Status { get; }
+
         void Update();
 
         void End();

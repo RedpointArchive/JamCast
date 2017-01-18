@@ -16,7 +16,9 @@ namespace JamCast.Services
 
         void ReportMacAddressInformation(string hostName, string macAddress, string ipAddresses);
 
-        StreamInfo ProjectorStreamingInfo();
+        StreamInfo ProjectorPing();
+
+        StreamInfo ClientPing();
 
         RoleInfo GetSessionRole();
 
@@ -152,12 +154,12 @@ namespace JamCast.Services
             }
         }
 
-        public StreamInfo ProjectorStreamingInfo()
+        public StreamInfo ProjectorPing()
         {
             var siteInfo = _siteInfoService.GetSiteInfo();
             var computerInfo = _computerInfoService.GetComputerInfo();
 
-            var url = siteInfo.Url + @"jamcast/api/projector/streaminginfo?_domain=" + siteInfo.Id;
+            var url = siteInfo.Url + @"jamcast/api/projector/ping?_domain=" + siteInfo.Id;
             var client = new WebClient();
 
             var result = client.UploadValues(url, "POST", new NameValueCollection
@@ -176,7 +178,39 @@ namespace JamCast.Services
             return new StreamInfo
             {
                 RtmpUrl = (string)resultParsed.result.rtmpUrl,
-                RtmpsUrl = (string)resultParsed.result.rtmpsUrl
+                RtmpsUrl = (string)resultParsed.result.rtmpsUrl,
+                ShouldStream = true,
+                ActiveClientId = (string)resultParsed.result.activeClientId,
+                ActiveClientFullName = (string)resultParsed.result.activeClientFullName,
+            };
+        }
+
+        public StreamInfo ClientPing()
+        {
+            var siteInfo = _siteInfoService.GetSiteInfo();
+            var computerInfo = _computerInfoService.GetComputerInfo();
+
+            var url = siteInfo.Url + @"jamcast/api/client/ping?_domain=" + siteInfo.Id;
+            var client = new WebClient();
+
+            var result = client.UploadValues(url, "POST", new NameValueCollection
+            {
+                {"sessionId", computerInfo.PersistentData.SessionId},
+                {"secretKey", computerInfo.PersistentData.SecretKey}
+            });
+
+            var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
+            var hasError = (bool?)resultParsed.has_error;
+            if (hasError.HasValue && hasError.Value)
+            {
+                throw new Exception((string)resultParsed.error);
+            }
+
+            return new StreamInfo
+            {
+                RtmpUrl = (string)resultParsed.result.rtmpUrl,
+                RtmpsUrl = (string)resultParsed.result.rtmpsUrl,
+                ShouldStream = (bool)resultParsed.result.shouldStream
             };
         }
 

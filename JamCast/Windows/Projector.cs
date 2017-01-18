@@ -242,6 +242,7 @@ namespace JamCast.Windows
 
         private void Projector_Paint(object sender, PaintEventArgs e)
         {
+            /*
             Graphics g;
             g.
 
@@ -391,13 +392,13 @@ namespace JamCast.Windows
                     new Rectangle(this.m_StreamX + 32, this.ClientSize.Height - 64,
                         (int) size.Width*9 + this.ClientSize.Width, 64),
                     left
-                    );*/
+                    );*
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-            }
+            }*/
         }
     }
 }

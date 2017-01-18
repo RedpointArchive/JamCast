@@ -1,3 +1,5 @@
+using System;
+using JamCast.Models;
 using JamCast.Windows;
 
 namespace JamCast.Services
@@ -6,24 +8,30 @@ namespace JamCast.Services
     {
         private readonly IJamHostApiService _jamHostApiService;
 
-        private string _rtmpsUrl;
+        private DateTime _nextUpdate = DateTime.MinValue;
+        private StreamInfo _streamInfo;
         private Projector _projector;
 
         public ProjectorRole(IJamHostApiService jamHostApiService)
         {
             _jamHostApiService = jamHostApiService;
+
+            Status = "Projector";
         }
 
         public void Update()
         {
-            if (_rtmpsUrl == null)
+            if (DateTime.UtcNow > _nextUpdate)
             {
-                _rtmpsUrl = _jamHostApiService.ProjectorStreamingInfo().RtmpsUrl;
+                _streamInfo = _jamHostApiService.ProjectorPing();
+                _nextUpdate = DateTime.UtcNow.AddMinutes(1);
             }
+
+            Status = _streamInfo.ActiveClientFullName ?? "<No Client>";
 
             if (_projector == null || _projector.IsDisposed)
             {
-                _projector = new Projector(_rtmpsUrl);
+                _projector = new Projector(_streamInfo.RtmpsUrl);
             }
 
             if (!_projector.Visible)
@@ -37,5 +45,7 @@ namespace JamCast.Services
             _projector.Close();
             _projector = null;
         }
+
+        public string Status { get; set; }
     }
 }

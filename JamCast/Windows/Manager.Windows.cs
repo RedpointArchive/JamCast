@@ -18,6 +18,7 @@ namespace JamCast
         private MenuItem _userInfoMenuItem = null;
         private MenuItem _accountTypeMenuItem = null;
         private MenuItem _roleInfoMenuItem = null;
+        private MenuItem _statusMenuItem = null;
         private MenuItem _switchRoleMenuItem = null;
 
         private Timer _timer = null;
@@ -47,6 +48,9 @@ namespace JamCast
             _roleInfoMenuItem = new MenuItem();
             _roleInfoMenuItem.Text = "...";
             _roleInfoMenuItem.Enabled = false;
+            _statusMenuItem = new MenuItem();
+            _statusMenuItem.Text = "...";
+            _statusMenuItem.Enabled = false;
             _switchRoleMenuItem = new MenuItem();
             _switchRoleMenuItem.Text = "...";
             _switchRoleMenuItem.Enabled = false;
@@ -57,6 +61,7 @@ namespace JamCast
             contextMenu.MenuItems.Add(_userInfoMenuItem);
             contextMenu.MenuItems.Add(_accountTypeMenuItem);
             contextMenu.MenuItems.Add(_roleInfoMenuItem);
+            contextMenu.MenuItems.Add(_statusMenuItem);
             contextMenu.MenuItems.Add(_switchRoleMenuItem);
             contextMenu.MenuItems.Add("-");
             contextMenu.MenuItems.Add("Exit", _notifyIcon_Exit);
@@ -117,6 +122,7 @@ namespace JamCast
             _userInfoMenuItem.Text = _userInfo.FullName;
             _accountTypeMenuItem.Text = "Account Type: " + _userInfo.AccountType;
             _roleInfoMenuItem.Text = "Role: " + role;
+            _statusMenuItem.Text = "Status: " + _currentRole?.Status;
 
             if (_userInfo.AccountType == "developer" || _userInfo.AccountType == "organiser")
             {
