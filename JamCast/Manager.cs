@@ -6,7 +6,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using JamCast.Models;
 using JamCast.Services;
+using Protoinject;
 
 namespace JamCast
 {
@@ -21,13 +23,22 @@ namespace JamCast
         private readonly IMacAddressReportingService _macAddressReporting;
         private readonly IImageService _imageService;
         private readonly IUserInfoService _userInfo;
+        private readonly IJamHostApiService _jamHostApiService;
+        private readonly IRoleInfoService _roleInfoService;
+        private readonly IClientRole _clientRole;
+        private readonly IProjectorRole _projectorRole;
+        private IRole _currentRole;
 
-        public Manager(IComputerInfoService computerInfo, IMacAddressReportingService macAddressReporting, IImageService imageService, IUserInfoService userInfo)
+        public Manager(IComputerInfoService computerInfo, IMacAddressReportingService macAddressReporting, IImageService imageService, IUserInfoService userInfo, IJamHostApiService jamHostApiService, IRoleInfoService roleInfoService, IClientRole clientRole, IProjectorRole projectorRole)
         {
             _computerInfo = computerInfo;
             _macAddressReporting = macAddressReporting;
             _imageService = imageService;
             _userInfo = userInfo;
+            _jamHostApiService = jamHostApiService;
+            _roleInfoService = roleInfoService;
+            _clientRole = clientRole;
+            _projectorRole = projectorRole;
         }
 
         public void Run()

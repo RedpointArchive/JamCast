@@ -5,6 +5,7 @@
         bool Authenticated { get; set; }
         string FullName { get; set; }
         string Email { get; set; }
+        string AccountType { get; set; }
     }
 
     public class UserInfoService : IUserInfoService
@@ -12,5 +13,6 @@
         public bool Authenticated { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
+        public string AccountType { get; set; }
     }
 }

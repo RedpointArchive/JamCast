@@ -15,13 +15,19 @@
     <Compile Include="Models\AuthInfo.cs" />
     <Compile Include="Models\ComputerInfo.cs" />
     <Compile Include="Models\PersistentComputerInfo.cs" />
+    <Compile Include="Models\RoleInfo.cs" />
     <Compile Include="Models\SiteInfo.cs" />
+    <Compile Include="Models\StreamInfo.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Services\ClientRole.cs" />
     <Compile Include="Services\ComputerInfoService.cs" />
     <Compile Include="Services\IAuthenticator.cs" />
     <Compile Include="Services\ImageService.cs" />
+    <Compile Include="Services\IRole.cs" />
     <Compile Include="Services\JamHostApiService.cs" />
     <Compile Include="Services\MacAddressReportingService.cs" />
+    <Compile Include="Services\ProjectorRole.cs" />
+    <Compile Include="Services\RoleInfoService.cs" />
     <Compile Include="Services\SiteInfoService.cs" />
     <Compile Include="Services\UserInfoService.cs" />
     <Compile Include="Windows\Auth.Windows.cs">
@@ -32,6 +38,12 @@
     </Compile>
     <Compile Include="Windows\Authenticator.Windows.cs" />
     <Compile Include="Windows\Manager.Windows.cs" />
+    <Compile Include="Windows\Projector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Projector.designer.cs">
+      <DependentUpon>Projector.cs</DependentUpon>
+    </Compile>
     <Content Include="Content\TrayCountdown.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -43,6 +55,9 @@
     </Content>
     <EmbeddedResource Include="Windows\Auth.Windows.resx">
       <DependentUpon>Auth.Windows.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Projector.resx">
+      <DependentUpon>Projector.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="siteinfo.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

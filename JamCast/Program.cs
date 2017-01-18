@@ -1,5 +1,6 @@
 using JamCast;
 using JamCast.Services;
+using JamCast.Windows;
 using Protoinject;
 
 namespace JamCast
@@ -16,7 +17,10 @@ namespace JamCast
             kernel.Bind<IUserInfoService>().To<UserInfoService>().InSingletonScope();
             kernel.Bind<IImageService>().To<ImageService>().InSingletonScope();
             kernel.Bind<IJamHostApiService>().To<JamHostApiService>().InSingletonScope();
+            kernel.Bind<IRoleInfoService>().To<RoleInfoService>().InSingletonScope();
             kernel.Bind<IManager>().To<Manager>().InSingletonScope();
+            kernel.Bind<IClientRole>().To<ClientRole>().InSingletonScope();
+            kernel.Bind<IProjectorRole>().To<ProjectorRole>().InSingletonScope();
             kernel.Bind<IAuthenticator>().To<Authenticator>().InSingletonScope();
 
             var authenticator = kernel.Get<IAuthenticator>();

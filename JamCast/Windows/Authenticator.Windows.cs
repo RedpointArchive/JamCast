@@ -35,6 +35,7 @@ namespace JamCast
                     _userInfo.Authenticated = true;
                     _userInfo.FullName = authInfo.FullName;
                     _userInfo.Email = authInfo.EmailAddress;
+                    _userInfo.AccountType = authInfo.AccountType;
                     return;
                 }
             }
@@ -48,6 +49,7 @@ namespace JamCast
             _userInfo.Authenticated = true;
             _userInfo.FullName = way.AuthResult.FullName;
             _userInfo.Email = way.AuthResult.EmailAddress;
+            _userInfo.AccountType = way.AuthResult.AccountType;
 
             way.Dispose();
             GC.Collect();

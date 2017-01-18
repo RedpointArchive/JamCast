@@ -13,5 +13,7 @@
         public string SessionId { get; set; }
 
         public string SecretKey { get; set; }
+
+        public string AccountType { get; set; }
     }
 }
