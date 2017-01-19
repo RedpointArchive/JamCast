@@ -490,6 +490,7 @@
       <xsl:attribute name="Include">
         <xsl:value-of
           select="user:GetRelativePath(
+            $root/Input/Generation/WorkingDirectory,
             concat(
               $project_path,
               '\',
@@ -504,6 +505,7 @@
           <xsl:text>exists('</xsl:text>
           <xsl:value-of
             select="user:GetRelativePath(
+              $root/Input/Generation/WorkingDirectory,
               concat(
                 $project_path,
                 '\',
@@ -692,6 +694,7 @@
             <xsl:attribute name="Include">
               <xsl:value-of
                 select="user:GetRelativePath(
+                  $root/Input/Generation/WorkingDirectory,
                   concat(
                     $source_project/@Path,
                     '\',
@@ -731,6 +734,7 @@
             <HintPath>
               <xsl:value-of
                 select="user:GetRelativePath(
+                  $root/Input/Generation/WorkingDirectory,
                   concat(
                     $source_project/@Path,
                     '\',
@@ -765,6 +769,7 @@
       <xsl:attribute name="Include">
         <xsl:value-of
           select="user:GetRelativePath(
+            $root/Input/Generation/WorkingDirectory,
             concat(
               $source_project/@Path,
               '\',
@@ -801,6 +806,7 @@
       <HintPath>
         <xsl:value-of
           select="user:GetRelativePath(
+            $root/Input/Generation/WorkingDirectory,
             concat(
               $source_project/@Path,
               '\',
@@ -883,6 +889,7 @@
             namespace="http://schemas.microsoft.com/developer/msbuild/2003">
             <xsl:attribute name="Include">
               <xsl:value-of select="user:GetRelativePath(
+                $root/Input/Generation/WorkingDirectory,
                 concat(
                   $root/Input/Generation/RootPath,
                   $target_project/@Path,
@@ -1639,6 +1646,7 @@
             <HintPath>
               <xsl:value-of
                 select="user:GetRelativePath(
+                  $root/Input/Generation/WorkingDirectory,
                   concat(
                     $project/@Path,
                     '\',
@@ -1969,6 +1977,7 @@
                     <xsl:attribute name="Include">
                       <xsl:value-of
                         select="user:GetRelativePath(
+                        $root/Input/Generation/WorkingDirectory,
                         concat(
                           $root/Input/Generation/RootPath,
                           $project/@Path,
@@ -1998,6 +2007,7 @@
                         <xsl:attribute name="Include">
                           <xsl:value-of
                             select="user:GetRelativePath(
+                          $root/Input/Generation/WorkingDirectory,
                           concat(
                             $root/Input/Generation/RootPath,
                             $project/@Path,
@@ -2021,6 +2031,7 @@
                         <xsl:attribute name="Include">
                           <xsl:value-of
                             select="user:GetRelativePath(
+                          $root/Input/Generation/WorkingDirectory,
                           concat(
                             $root/Input/Generation/RootPath,
                             $project/@Path,
@@ -2043,6 +2054,7 @@
                         <xsl:attribute name="Include">
                           <xsl:value-of
                             select="user:GetRelativePath(
+                          $root/Input/Generation/WorkingDirectory,
                           concat(
                             $root/Input/Generation/RootPath,
                             $project/@Path,
@@ -2066,6 +2078,7 @@
                         <xsl:attribute name="Include">
                           <xsl:value-of
                             select="user:GetRelativePath(
+                          $root/Input/Generation/WorkingDirectory,
                           concat(
                             $root/Input/Generation/RootPath,
                             $project/@Path,
