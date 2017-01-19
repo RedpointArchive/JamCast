@@ -1,3 +1,9 @@
+using System;
+#if PLATFORM_WINDOWS
+using System.Deployment.Application;
+using System.Windows.Forms;
+#endif
+using System.Threading;
 using JamCast;
 using JamCast.Services;
 using JamCast.Windows;
@@ -9,6 +15,12 @@ namespace JamCast
     {
         internal static void Main(string[] args)
         {
+#if PLATFORM_WINDOWS
+            var thread = new Thread(CheckForUpdates);
+            thread.IsBackground = true;
+            thread.Start();
+#endif
+
             var kernel = new StandardKernel();
 
             kernel.Bind<ISiteInfoService>().To<SiteInfoService>().InSingletonScope();
@@ -29,6 +41,46 @@ namespace JamCast
             var manager = kernel.Get<IManager>();
             manager.Run();
         }
+
+#if PLATFORM_WINDOWS
+        private static void CheckForUpdates()
+        {
+            while (true)
+            {
+                // Wait a minute.
+                Thread.Sleep(60000);
+
+                if (ApplicationDeployment.IsNetworkDeployed)
+                {
+                    Boolean updateAvailable = false;
+                    ApplicationDeployment ad = ApplicationDeployment.CurrentDeployment;
+
+                    try
+                    {
+                        updateAvailable = ad.CheckForUpdate();
+                    }
+                    catch 
+                    {
+                        // Can't check; ignore.
+                        continue;
+                    }
+
+                    if (updateAvailable)
+                    {
+                        try
+                        {
+                            ad.Update();
+                            Application.Restart();
+                        }
+                        catch
+                        {
+                            // Can't auto-update.
+                        }
+                    }
+                }
+            }
+        }
+#endif
     }
 }
 

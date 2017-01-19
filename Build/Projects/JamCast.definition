@@ -9,6 +9,7 @@
     <Reference Include="ffmpeg" />
     <Reference Include="Newtonsoft.Json" />
     <Reference Include="Protoinject" />
+    <Reference Include="Deployment" />
   </References>
   <Files>
     <Compile Include="Manager.cs" />
