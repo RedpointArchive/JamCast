@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using JamCast.Models;
 using Newtonsoft.Json;
 
@@ -19,8 +21,8 @@ namespace JamCast.Services
             {
                 return _siteInfo;
             }
-
-            _siteInfo = JsonConvert.DeserializeObject<SiteInfo>(File.ReadAllText("siteinfo.json"));
+            
+            _siteInfo = JsonConvert.DeserializeObject<SiteInfo>(File.ReadAllText(Directory.GetFiles(Environment.CurrentDirectory, "siteinfo*.json").First()));
             return _siteInfo;
         }
     }
