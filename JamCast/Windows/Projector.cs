@@ -79,7 +79,7 @@ namespace JamCast.Windows
 
                 _ffplay = new Process();
                 _ffplay.StartInfo.FileName = "Content\\ffplay.exe";
-                _ffplay.StartInfo.Arguments = "-loglevel verbose -stats " + _rtmpsUrl;
+                _ffplay.StartInfo.Arguments = "-loglevel verbose -stats -probesize 32 -sync ext " + _rtmpsUrl;
                 _ffplay.StartInfo.CreateNoWindow = false;
                 //_ffplay.StartInfo.RedirectStandardOutput = true;
                 //_ffplay.StartInfo.RedirectStandardError = true;
