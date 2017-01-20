@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
+using System.Net.Http;
+using System.Security.Policy;
 using System.Text;
+using System.Threading.Tasks;
 using Client;
 using JamCast.Models;
 using Newtonsoft.Json;
@@ -23,6 +28,8 @@ namespace JamCast.Services
         RoleInfo GetSessionRole();
 
         void SetSessionRole(string newRole);
+
+        void UploadClientScreenshot(MemoryStream memory);
     }
 
     public class JamHostApiService : IJamHostApiService
@@ -189,6 +196,8 @@ namespace JamCast.Services
                 ShouldStream = true,
                 ActiveClientId = (string)resultParsed.result.activeClientId,
                 ActiveClientFullName = (string)resultParsed.result.activeClientFullName,
+                ActiveClientScreenshotHash = (string)resultParsed.result.activeClientScreenshotHash,
+                OperationMode = ((string)resultParsed.result.operationMode) == "rtmp" ? OperationMode.Rtmp : OperationMode.Jpeg
             };
         }
 
@@ -217,7 +226,8 @@ namespace JamCast.Services
             {
                 RtmpUrl = (string)resultParsed.result.rtmpUrl,
                 RtmpsUrl = (string)resultParsed.result.rtmpsUrl,
-                ShouldStream = (bool)resultParsed.result.shouldStream
+                ShouldStream = (bool)resultParsed.result.shouldStream,
+                OperationMode = ((string)resultParsed.result.operationMode) == "rtmp" ? OperationMode.Rtmp : OperationMode.Jpeg
             };
         }
 
@@ -270,6 +280,35 @@ namespace JamCast.Services
             if (hasError.HasValue && hasError.Value)
             {
                 throw new Exception((string)resultParsed.error);
+            }
+        }
+
+        public void UploadClientScreenshot(MemoryStream memory)
+        {
+            var siteInfo = _siteInfoService.GetSiteInfo();
+            var computerInfo = _computerInfoService.GetComputerInfo();
+
+            var url = siteInfo.Url + @"jamcast/api/client/uploadscreenshot?_domain=" + siteInfo.Id;
+
+            HttpClient httpClient = new HttpClient();
+            MultipartFormDataContent form = new MultipartFormDataContent();
+
+            form.Add(new StringContent(computerInfo.PersistentData.SessionId), "sessionId");
+            form.Add(new StringContent(computerInfo.PersistentData.SecretKey), "secretKey");
+
+            using (var gzip = new GZipStream(memory, CompressionMode.Compress))
+            {
+                using (var compressedMemory = new MemoryStream())
+                {
+                    gzip.CopyTo(compressedMemory);
+                    compressedMemory.Seek(0, SeekOrigin.Begin);
+                    
+                    var br = new byte[compressedMemory.Length];
+                    compressedMemory.Read(br, 0, br.Length);
+
+                    form.Add(new ByteArrayContent(br), "screenshot", "screenshot.jpeg.gz");
+                    Task.Run(async () => { await httpClient.PostAsync(url, form); }).Wait();
+                }
             }
         }
     }

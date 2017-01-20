@@ -1,5 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Windows.Forms;
 using JamCast.Models;
 
 namespace JamCast.Services
@@ -12,6 +18,7 @@ namespace JamCast.Services
         private StreamInfo _streamInfo;
 
         private Process _ffmpegProcess;
+        private Thread _screenshotCaptureThread;
 
         public ClientRole(IJamHostApiService jamHostApiService)
         {
@@ -35,33 +42,81 @@ namespace JamCast.Services
                 _nextUpdate = DateTime.UtcNow.AddMinutes(1);
             }
 
-            if (_streamInfo?.ShouldStream ?? false)
+            if (_streamInfo != null)
             {
-                Status = "Streaming";
+                _streamInfo.ShouldStream = true;
 
-                if (_ffmpegProcess == null || _ffmpegProcess.HasExited)
+                if (_streamInfo?.ShouldStream ?? false)
                 {
-                    var killInfo = new ProcessStartInfo(@"C:\Windows\System32\taskkill.exe", "/f /im ffmpeg.exe");
-                    killInfo.CreateNoWindow = true;
-                    var kill = Process.Start(killInfo);
-                    kill.WaitForExit();
+                    Status = "Streaming";
 
-                    _ffmpegProcess = new Process();
-                    _ffmpegProcess.StartInfo.FileName = "Content\\ffmpeg.exe";
-                    _ffmpegProcess.StartInfo.Arguments = "-loglevel verbose -f gdigrab -i desktop -framerate 10 -vf scale=1280:720 -b:v 10k -f flv " + _streamInfo?.RtmpsUrl;
-                    _ffmpegProcess.StartInfo.CreateNoWindow = false;
-                    _ffmpegProcess.StartInfo.UseShellExecute = false;
-                    _ffmpegProcess.Start();
+                    if (_streamInfo.OperationMode == OperationMode.Rtmp)
+                    {
+                        if (_ffmpegProcess == null || _ffmpegProcess.HasExited)
+                        {
+                            var killInfo = new ProcessStartInfo(@"C:\Windows\System32\taskkill.exe", "/f /im ffmpeg.exe");
+                            killInfo.CreateNoWindow = true;
+                            var kill = Process.Start(killInfo);
+                            kill.WaitForExit();
+
+                            _ffmpegProcess = new Process();
+                            _ffmpegProcess.StartInfo.FileName = "Content\\ffmpeg.exe";
+                            _ffmpegProcess.StartInfo.Arguments =
+                                "-loglevel verbose -f gdigrab -i desktop -framerate 10 -vf scale=1280:720 -b:v 10k -f flv " +
+                                _streamInfo?.RtmpsUrl;
+                            _ffmpegProcess.StartInfo.CreateNoWindow = true;
+                            _ffmpegProcess.StartInfo.UseShellExecute = false;
+                            _ffmpegProcess.Start();
+                        }
+                    }
+                    else
+                    {
+                        if (_screenshotCaptureThread == null || !_screenshotCaptureThread.IsAlive)
+                        {
+                            _screenshotCaptureThread = new Thread(CaptureScreenshotsAndUpload);
+                            _screenshotCaptureThread.IsBackground = true;
+                            _screenshotCaptureThread.Start();
+                        }
+                    }
+                }
+                else
+                {
+                    Status = "Not Streaming";
+
+                    if (_streamInfo.OperationMode == OperationMode.Rtmp)
+                    {
+                        if (_ffmpegProcess != null && !_ffmpegProcess.HasExited)
+                        {
+                            _ffmpegProcess.Kill();
+                        }
+                    }
                 }
             }
-            else
-            {
-                Status = "Not Streaming";
+        }
 
-                if (_ffmpegProcess != null && !_ffmpegProcess.HasExited)
+        private void CaptureScreenshotsAndUpload()
+        {
+            while (_streamInfo?.ShouldStream ?? false)
+            {
+                var image = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+                var graphics = Graphics.FromImage(image);
+                graphics.CopyFromScreen(0, 0, 0, 0, image.Size);
+
+                using (var memory = new MemoryStream())
                 {
-                    _ffmpegProcess.Kill();
+                    var encoder = ImageCodecInfo.GetImageEncoders().First(x => x.FormatID == ImageFormat.Jpeg.Guid);
+                    var encoderParameter = new EncoderParameter(Encoder.Quality, 50L);
+                    var encoderParameters = new EncoderParameters(1);
+                    encoderParameters.Param[0] = encoderParameter;
+
+                    image.Save(memory, encoder, encoderParameters);
+                    var len = memory.Position;
+                    memory.Seek(0, SeekOrigin.Begin);
+
+                    _jamHostApiService.UploadClientScreenshot(memory);
                 }
+
+                Thread.Sleep(500);
             }
         }
 

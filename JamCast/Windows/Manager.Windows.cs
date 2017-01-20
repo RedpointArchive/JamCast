@@ -75,13 +75,22 @@ namespace JamCast
                 Icon = icon,
                 Text = "JamCast - " + _userInfo.FullName,
                 Visible = true,
-                ContextMenu = contextMenu
+                ContextMenu = contextMenu,
             };
+            _notifyIcon.DoubleClick += _notifyIcon_DoubleClick;
 
             _timer = new Timer(container);
             _timer.Interval = 100;
             _timer.Tick += _timer_Tick;
             _timer.Enabled = true;
+        }
+
+        private void _notifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            _currentRole?.End();
+
+            _notifyIcon.Visible = false;
+            Application.Exit();
         }
 
         private void _timer_Tick(object sender, EventArgs e)
@@ -151,6 +160,9 @@ namespace JamCast
 
         private void _notifyIcon_Exit(object sender, EventArgs e)
         {
+            _currentRole?.End();
+
+            _notifyIcon.Visible = false;
             Application.Exit();
         }
 

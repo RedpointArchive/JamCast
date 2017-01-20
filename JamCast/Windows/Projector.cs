@@ -76,6 +76,10 @@ namespace JamCast.Windows
                 killInfo.CreateNoWindow = true;
                 var kill = Process.Start(killInfo);
                 kill.WaitForExit();
+                killInfo = new ProcessStartInfo(@"C:\Windows\System32\taskkill.exe", "/f /im ffmpeg.exe");
+                killInfo.CreateNoWindow = true;
+                kill = Process.Start(killInfo);
+                kill.WaitForExit();
 
                 _ffplay = new Process();
                 _ffplay.StartInfo.FileName = "Content\\ffplay.exe";
