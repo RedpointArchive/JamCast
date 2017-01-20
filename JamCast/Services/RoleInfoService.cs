@@ -26,12 +26,17 @@ namespace JamCast.Services
             {
                 return _cachedRoleInfo;
             }
-
-            var newRole = _jamHostApiService.GetSessionRole();
-            if (newRole != null)
+            try
             {
-                _cachedRoleInfo = newRole.Value;
-                _utcCacheExpiry = DateTime.UtcNow.AddMinutes(5);
+                var newRole = _jamHostApiService.GetSessionRole();
+                if (newRole != null)
+                {
+                    _cachedRoleInfo = newRole.Value;
+                    _utcCacheExpiry = DateTime.UtcNow.AddMinutes(5);
+                }
+            }
+            catch (System.Net.WebException) {
+                _utcCacheExpiry = DateTime.UtcNow.AddMinutes(1);
             }
 
             if (_utcCacheExpiry != DateTime.MinValue)
