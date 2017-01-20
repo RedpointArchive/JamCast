@@ -62,6 +62,6 @@ namespace JamCast.Services
         }
 
         public string Status { get; set; }
-    }'
+    }
 
 }
