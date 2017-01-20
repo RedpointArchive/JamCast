@@ -23,7 +23,13 @@ namespace JamCast.Services
         {
             if (DateTime.UtcNow > _nextUpdate)
             {
-                _streamInfo = _jamHostApiService.ProjectorPing();
+                try
+                {
+                    _streamInfo = _jamHostApiService.ProjectorPing();
+                }
+                catch (System.Net.WebException)
+                {
+                }
                 _nextUpdate = DateTime.UtcNow.AddMinutes(1);
             }
 

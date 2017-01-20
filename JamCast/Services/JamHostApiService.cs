@@ -43,13 +43,21 @@ namespace JamCast.Services
             var url = siteInfo.Url + @"jamcast/api/authenticate?_domain=" + siteInfo.Id;
             var client = new WebClient();
 
-            var result = client.UploadValues(url, "POST", new NameValueCollection
+            dynamic resultParsed;
+            try
             {
-                {"email", email},
-                {"password", password}
-            });
+                var result = client.UploadValues(url, "POST", new NameValueCollection
+                {
+                    {"email", email},
+                    {"password", password}
+                });
+                resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
+            }
+            catch (WebException c)
+            {
+                resultParsed = new { has_error = true, error=$"WebException: {c.Message}" };
+            }
 
-            var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
             var hasError = (bool?)resultParsed.has_error;
             if (hasError.HasValue && hasError.Value)
             {
@@ -161,7 +169,6 @@ namespace JamCast.Services
 
             var url = siteInfo.Url + @"jamcast/api/projector/ping?_domain=" + siteInfo.Id;
             var client = new WebClient();
-
             var result = client.UploadValues(url, "POST", new NameValueCollection
             {
                 {"sessionId", computerInfo.PersistentData.SessionId},
