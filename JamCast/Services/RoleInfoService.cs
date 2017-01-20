@@ -27,9 +27,21 @@ namespace JamCast.Services
                 return _cachedRoleInfo;
             }
 
-            _cachedRoleInfo = _jamHostApiService.GetSessionRole();
-            _utcCacheExpiry = DateTime.UtcNow.AddMinutes(5);
-            return _cachedRoleInfo;
+            var newRole = _jamHostApiService.GetSessionRole();
+            if (newRole != null)
+            {
+                _cachedRoleInfo = newRole.Value;
+                _utcCacheExpiry = DateTime.UtcNow.AddMinutes(5);
+            }
+
+            if (_utcCacheExpiry != DateTime.MinValue)
+            {
+                return _cachedRoleInfo;
+            }
+            else
+            {
+                return RoleInfo.Client;
+            }
         }
 
         public void SwitchRole()

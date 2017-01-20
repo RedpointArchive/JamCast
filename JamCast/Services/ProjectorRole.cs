@@ -23,37 +23,45 @@ namespace JamCast.Services
         {
             if (DateTime.UtcNow > _nextUpdate)
             {
-                try
+                var streamInfo = _jamHostApiService.ProjectorPing();
+
+                if (streamInfo != null)
                 {
-                    _streamInfo = _jamHostApiService.ProjectorPing();
+                    _streamInfo = streamInfo;
                 }
-                catch (System.Net.WebException)
-                {
-                }
+
                 _nextUpdate = DateTime.UtcNow.AddMinutes(1);
             }
 
-            Status = _streamInfo.ActiveClientFullName ?? "<No Client>";
-
-            if (_projector == null || _projector.IsDisposed)
+            if (_streamInfo != null)
             {
-                _projector = new Projector();
+                Status = "Streaming From: " + (_streamInfo.ActiveClientFullName ?? "<No Client>");
+
+                if (_projector == null || _projector.IsDisposed)
+                {
+                    _projector = new Projector();
+                }
+
+                _projector.SetRtmpsUrl(_streamInfo.RtmpsUrl);
+
+                if (!_projector.Visible)
+                {
+                    _projector.Show();
+                }
             }
-
-            _projector.SetRtmpsUrl(_streamInfo.RtmpsUrl);
-
-            if (!_projector.Visible)
+            else
             {
-                _projector.Show();
+                Status = "Waiting for Streaming Information";
             }
         }
 
         public void End()
         {
-            _projector.Close();
+            _projector?.Close();
             _projector = null;
         }
 
         public string Status { get; set; }
-    }
+    }'
+
 }

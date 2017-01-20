@@ -31,11 +31,8 @@ namespace JamCast.Services
         {
             if (DateTime.UtcNow > _nextUpdate)
             {
-                try
-                {
-                    _streamInfo = _jamHostApiService.ClientPing();
-                }
-                catch (System.Net.WebException)
+                var streamInfo = _jamHostApiService.ClientPing();
+                if (streamInfo != null)
                 {
                     _streamInfo = null;
                 }
@@ -122,7 +119,8 @@ namespace JamCast.Services
 
         public void End()
         {
-            
+            _ffmpegProcess?.Kill();
+            _ffmpegProcess = null;
         }
 
         public string Status { get; set; }

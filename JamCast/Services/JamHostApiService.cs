@@ -25,7 +25,7 @@ namespace JamCast.Services
 
         StreamInfo ClientPing();
 
-        RoleInfo GetSessionRole();
+        RoleInfo? GetSessionRole();
 
         void SetSessionRole(string newRole);
 
@@ -171,144 +171,177 @@ namespace JamCast.Services
 
         public StreamInfo ProjectorPing()
         {
-            var siteInfo = _siteInfoService.GetSiteInfo();
-            var computerInfo = _computerInfoService.GetComputerInfo();
-
-            var url = siteInfo.Url + @"jamcast/api/projector/ping?_domain=" + siteInfo.Id;
-            var client = new WebClient();
-            var result = client.UploadValues(url, "POST", new NameValueCollection
+            try
             {
-                {"sessionId", computerInfo.PersistentData.SessionId},
-                {"secretKey", computerInfo.PersistentData.SecretKey}
-            });
+                var siteInfo = _siteInfoService.GetSiteInfo();
+                var computerInfo = _computerInfoService.GetComputerInfo();
 
-            var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
-            var hasError = (bool?)resultParsed.has_error;
-            if (hasError.HasValue && hasError.Value)
-            {
-                throw new Exception((string) resultParsed.error);
+                var url = siteInfo.Url + @"jamcast/api/projector/ping?_domain=" + siteInfo.Id;
+                var client = new WebClient();
+                var result = client.UploadValues(url, "POST", new NameValueCollection
+                {
+                    {"sessionId", computerInfo.PersistentData.SessionId},
+                    {"secretKey", computerInfo.PersistentData.SecretKey}
+                });
+
+                var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
+                var hasError = (bool?) resultParsed.has_error;
+                if (hasError.HasValue && hasError.Value)
+                {
+                    throw new Exception((string) resultParsed.error);
+                }
+
+                return new StreamInfo
+                {
+                    RtmpUrl = (string) resultParsed.result.rtmpUrl,
+                    RtmpsUrl = (string) resultParsed.result.rtmpsUrl,
+                    ShouldStream = true,
+                    ActiveClientId = (string) resultParsed.result.activeClientId,
+                    ActiveClientFullName = (string) resultParsed.result.activeClientFullName,
+                    ActiveClientScreenshotHash = (string) resultParsed.result.activeClientScreenshotHash,
+                    OperationMode =
+                        ((string) resultParsed.result.operationMode) == "rtmp" ? OperationMode.Rtmp : OperationMode.Jpeg
+                };
             }
-
-            return new StreamInfo
+            catch
             {
-                RtmpUrl = (string)resultParsed.result.rtmpUrl,
-                RtmpsUrl = (string)resultParsed.result.rtmpsUrl,
-                ShouldStream = true,
-                ActiveClientId = (string)resultParsed.result.activeClientId,
-                ActiveClientFullName = (string)resultParsed.result.activeClientFullName,
-                ActiveClientScreenshotHash = (string)resultParsed.result.activeClientScreenshotHash,
-                OperationMode = ((string)resultParsed.result.operationMode) == "rtmp" ? OperationMode.Rtmp : OperationMode.Jpeg
-            };
+                return null;
+            }
         }
 
         public StreamInfo ClientPing()
         {
-            var siteInfo = _siteInfoService.GetSiteInfo();
-            var computerInfo = _computerInfoService.GetComputerInfo();
-
-            var url = siteInfo.Url + @"jamcast/api/client/ping?_domain=" + siteInfo.Id;
-            var client = new WebClient();
-
-            var result = client.UploadValues(url, "POST", new NameValueCollection
+            try
             {
-                {"sessionId", computerInfo.PersistentData.SessionId},
-                {"secretKey", computerInfo.PersistentData.SecretKey}
-            });
+                var siteInfo = _siteInfoService.GetSiteInfo();
+                var computerInfo = _computerInfoService.GetComputerInfo();
 
-            var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
-            var hasError = (bool?)resultParsed.has_error;
-            if (hasError.HasValue && hasError.Value)
-            {
-                throw new Exception((string)resultParsed.error);
+                var url = siteInfo.Url + @"jamcast/api/client/ping?_domain=" + siteInfo.Id;
+                var client = new WebClient();
+
+                var result = client.UploadValues(url, "POST", new NameValueCollection
+                {
+                    {"sessionId", computerInfo.PersistentData.SessionId},
+                    {"secretKey", computerInfo.PersistentData.SecretKey}
+                });
+
+                var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
+                var hasError = (bool?) resultParsed.has_error;
+                if (hasError.HasValue && hasError.Value)
+                {
+                    throw new Exception((string) resultParsed.error);
+                }
+
+                return new StreamInfo
+                {
+                    RtmpUrl = (string) resultParsed.result.rtmpUrl,
+                    RtmpsUrl = (string) resultParsed.result.rtmpsUrl,
+                    ShouldStream = (bool) resultParsed.result.shouldStream,
+                    OperationMode =
+                        ((string) resultParsed.result.operationMode) == "rtmp" ? OperationMode.Rtmp : OperationMode.Jpeg
+                };
             }
-
-            return new StreamInfo
+            catch
             {
-                RtmpUrl = (string)resultParsed.result.rtmpUrl,
-                RtmpsUrl = (string)resultParsed.result.rtmpsUrl,
-                ShouldStream = (bool)resultParsed.result.shouldStream,
-                OperationMode = ((string)resultParsed.result.operationMode) == "rtmp" ? OperationMode.Rtmp : OperationMode.Jpeg
-            };
+                return null;
+            }
         }
 
-        public RoleInfo GetSessionRole()
+        public RoleInfo? GetSessionRole()
         {
-            var siteInfo = _siteInfoService.GetSiteInfo();
-            var computerInfo = _computerInfoService.GetComputerInfo();
-
-            var url = siteInfo.Url + @"jamcast/api/getrole?_domain=" + siteInfo.Id;
-            var client = new WebClient();
-
-            var result = client.UploadValues(url, "POST", new NameValueCollection
+            try
             {
-                {"sessionId", computerInfo.PersistentData.SessionId},
-                {"secretKey", computerInfo.PersistentData.SecretKey}
-            });
+                var siteInfo = _siteInfoService.GetSiteInfo();
+                var computerInfo = _computerInfoService.GetComputerInfo();
 
-            var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
-            var hasError = (bool?)resultParsed.has_error;
-            if (hasError.HasValue && hasError.Value)
-            {
-                throw new Exception((string)resultParsed.error);
+                var url = siteInfo.Url + @"jamcast/api/getrole?_domain=" + siteInfo.Id;
+                var client = new WebClient();
+
+                var result = client.UploadValues(url, "POST", new NameValueCollection
+                {
+                    {"sessionId", computerInfo.PersistentData.SessionId},
+                    {"secretKey", computerInfo.PersistentData.SecretKey}
+                });
+
+                var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
+                var hasError = (bool?) resultParsed.has_error;
+                if (hasError.HasValue && hasError.Value)
+                {
+                    throw new Exception((string) resultParsed.error);
+                }
+
+                if ((string) resultParsed.result == "projector")
+                {
+                    return RoleInfo.Projector;
+                }
+
+                return RoleInfo.Client;
             }
+            catch { }
 
-            if ((string) resultParsed.result == "projector")
-            {
-                return RoleInfo.Projector;
-            }
-
-            return RoleInfo.Client;
+            return null;
         }
 
         public void SetSessionRole(string role)
         {
-            var siteInfo = _siteInfoService.GetSiteInfo();
-            var computerInfo = _computerInfoService.GetComputerInfo();
-
-            var url = siteInfo.Url + @"jamcast/api/setrole?_domain=" + siteInfo.Id;
-            var client = new WebClient();
-
-            var result = client.UploadValues(url, "POST", new NameValueCollection
+            try
             {
-                {"sessionId", computerInfo.PersistentData.SessionId},
-                {"secretKey", computerInfo.PersistentData.SecretKey},
-                {"role", role}
-            });
+                var siteInfo = _siteInfoService.GetSiteInfo();
+                var computerInfo = _computerInfoService.GetComputerInfo();
 
-            var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
-            var hasError = (bool?)resultParsed.has_error;
-            if (hasError.HasValue && hasError.Value)
-            {
-                throw new Exception((string)resultParsed.error);
+                var url = siteInfo.Url + @"jamcast/api/setrole?_domain=" + siteInfo.Id;
+                var client = new WebClient();
+
+                var result = client.UploadValues(url, "POST", new NameValueCollection
+                {
+                    {"sessionId", computerInfo.PersistentData.SessionId},
+                    {"secretKey", computerInfo.PersistentData.SecretKey},
+                    {"role", role}
+                });
+
+                var resultParsed = JsonConvert.DeserializeObject<dynamic>(Encoding.ASCII.GetString(result));
+                var hasError = (bool?) resultParsed.has_error;
+                if (hasError.HasValue && hasError.Value)
+                {
+                    throw new Exception((string) resultParsed.error);
+                }
             }
+            catch { }
         }
 
         public void UploadClientScreenshot(MemoryStream memory)
         {
-            var siteInfo = _siteInfoService.GetSiteInfo();
-            var computerInfo = _computerInfoService.GetComputerInfo();
-
-            var url = siteInfo.Url + @"jamcast/api/client/uploadscreenshot?_domain=" + siteInfo.Id;
-
-            HttpClient httpClient = new HttpClient();
-            MultipartFormDataContent form = new MultipartFormDataContent();
-
-            form.Add(new StringContent(computerInfo.PersistentData.SessionId), "sessionId");
-            form.Add(new StringContent(computerInfo.PersistentData.SecretKey), "secretKey");
-
-            using (var gzip = new GZipStream(memory, CompressionMode.Compress))
+            try
             {
-                using (var compressedMemory = new MemoryStream())
-                {
-                    gzip.CopyTo(compressedMemory);
-                    compressedMemory.Seek(0, SeekOrigin.Begin);
-                    
-                    var br = new byte[compressedMemory.Length];
-                    compressedMemory.Read(br, 0, br.Length);
+                var siteInfo = _siteInfoService.GetSiteInfo();
+                var computerInfo = _computerInfoService.GetComputerInfo();
 
-                    form.Add(new ByteArrayContent(br), "screenshot", "screenshot.jpeg.gz");
-                    Task.Run(async () => { await httpClient.PostAsync(url, form); }).Wait();
+                var url = siteInfo.Url + @"jamcast/api/client/uploadscreenshot?_domain=" + siteInfo.Id;
+
+                HttpClient httpClient = new HttpClient();
+                MultipartFormDataContent form = new MultipartFormDataContent();
+
+                form.Add(new StringContent(computerInfo.PersistentData.SessionId), "sessionId");
+                form.Add(new StringContent(computerInfo.PersistentData.SecretKey), "secretKey");
+
+                using (var gzip = new GZipStream(memory, CompressionMode.Compress))
+                {
+                    using (var compressedMemory = new MemoryStream())
+                    {
+                        gzip.CopyTo(compressedMemory);
+                        compressedMemory.Seek(0, SeekOrigin.Begin);
+
+                        var br = new byte[compressedMemory.Length];
+                        compressedMemory.Read(br, 0, br.Length);
+
+                        form.Add(new ByteArrayContent(br), "screenshot", "screenshot.jpeg.gz");
+                        Task.Run(async () => { await httpClient.PostAsync(url, form); }).Wait();
+                    }
                 }
+            }
+            catch
+            {
+                
             }
         }
     }
