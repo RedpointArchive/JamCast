@@ -13,9 +13,10 @@ namespace JamCast.Windows
 {
     public partial class Projector : Form
     {
-        private readonly string _rtmpsUrl;
+        private string _rtmpsUrl;
 
         private Process _ffplay;
+        private string _ffplayRtmpsUrl;
 
         [DllImport("user32.dll", SetLastError = true)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int nWidth, int nHeight, uint flags);
@@ -45,11 +46,10 @@ namespace JamCast.Windows
         private List<IntPtr> _allKnownWindowHandles = new List<IntPtr>();
 
         private Random _random = new Random();
+        
 
-        public Projector(string rtmpsUrl)
+        public Projector()
         {
-            _rtmpsUrl = rtmpsUrl;
-
             InitializeComponent();
         }
 
@@ -61,6 +61,11 @@ namespace JamCast.Windows
             this.SetStyle(ControlStyles.UserPaint, true);
         }
 
+        public void SetRtmpsUrl(string streamInfoRtmpsUrl)
+        {
+            _rtmpsUrl = streamInfoRtmpsUrl;
+        }
+
         private void _timer_Tick(object sender, EventArgs ee)
         {
             if (_ffplay == null || _ffplay.HasExited)
@@ -68,18 +73,25 @@ namespace JamCast.Windows
                 _ffplay = null;
             }
 
+            if (_ffplayRtmpsUrl != _rtmpsUrl)
+            {
+                _ffplay?.Kill();
+                _ffplay = null;
+            }
+
             if (_ffplay == null)
             {
                 _ffmpegStatusLabel.Text = "Launching FFPlay";
+                _ffplayRtmpsUrl = _rtmpsUrl;
 
                 var killInfo = new ProcessStartInfo(@"C:\Windows\System32\taskkill.exe", "/f /im ffplay.exe");
                 killInfo.CreateNoWindow = true;
                 var kill = Process.Start(killInfo);
-                kill.WaitForExit();
+                kill?.WaitForExit();
                 killInfo = new ProcessStartInfo(@"C:\Windows\System32\taskkill.exe", "/f /im ffmpeg.exe");
                 killInfo.CreateNoWindow = true;
                 kill = Process.Start(killInfo);
-                kill.WaitForExit();
+                kill?.WaitForExit();
 
                 _ffplay = new Process();
                 _ffplay.StartInfo.FileName = "Content\\ffplay.exe";

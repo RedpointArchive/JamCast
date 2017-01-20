@@ -37,8 +37,10 @@ namespace JamCast.Services
 
             if (_projector == null || _projector.IsDisposed)
             {
-                _projector = new Projector(_streamInfo.RtmpsUrl);
+                _projector = new Projector();
             }
+
+            _projector.SetRtmpsUrl(_streamInfo.RtmpsUrl);
 
             if (!_projector.Visible)
             {
